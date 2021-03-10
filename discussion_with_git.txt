@@ -1,0 +1,18 @@
+Steps to submit the code in github:
+
+Step1 Create a new repo
+Step2 Go to the folder in the 
+      local system which is containing 
+      the code to submit.
+      ( We are doing through command prompt)
+STEP3 We have to create the local repo
+      git init
+STEP4  We are staging the files to be commited in the
+       local repo
+     git add .
+STEP5 Commit to the local repo
+     git commit -m "My bootstrap codes"
+STEP6 You are mapping to the remote repo
+git remote add origin https://github.com/CDE20IJ012/10MAR2021
+STEP 7 Pushing the locally commited code
+git push origin master
