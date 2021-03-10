@@ -1,0 +1,269 @@
+How to create our first hibernate standalone
+application?
+1) Create a simple maven project. ( no web project)
+2) Let us update pom.xml for the required
+   dependencies.
+Currently two jar files will are required.
+So that we mention within the pom.xml of our
+hibernate application.
+
+<dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.3.6.Final</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.19</version>
+</dependency>
+--------------------------------------------------
+hibernate-core will give me the api related with
+Hibernate.
+mysql-connector-java ( which is driver to connect with
+mysql)
+------------------------------------------------------
+We can go for configuring the hibernate application
+with the help of xml and some of the parts for the
+configuration or settings can be done with annotations.
+------------------------------------------------------
+Let us first go for configuring with xml files.
+
+1) Configuration xml file.
+* hibernate.cfg.xml ( configuration file 
+  keeping the details like driver, url, username, password etc.
+
+2) Mapping xml file which is used for mapping between
+the class and the table.
+We give it a name as.
+   example. employee.hbm.xml
+            student.hbm.xml
+
+We will keep both the configuration xml files in the 
+resource folder.
+
+---------------------------------------------------------------------------------------------------
+hibernate.cfg.xml
+  
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration SYSTEM "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+ 
+ 
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">password@123</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/studentDB</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+        <property name="show_sql">true</property>
+        <property name="hibernate.hbm2ddl.auto">update</property> 
+        <mapping resource="Employee.hbm.xml"/>
+    </session-factory>
+</hibernate-configuration>
+
+Note: Create the database if it is not present in the database. Table can be created 
+with the hibernate code itself depending on the property value of hibernate.hbm2ddl.auto. 
+Currently in the demo code we have used update. If we are using update the application or the 
+hibernate framework related code will check whether the table is present or not. If the execution of the
+code is for the first time , it will create the table and second time onwards it will go for updating/appending
+in the same table.
+
+1 hibernate.dialect
+This property makes Hibernate generate the appropriate SQL for the chosen database.
+
+2 hibernate.connection.driver_class
+The JDBC driver class.
+
+3 hibernate.connection.url
+The JDBC URL to the database instance.
+
+4 hibernate.connection.username
+The database username.
+
+5 hibernate.connection.password
+The database password.
+
+
+---------------------------------------------------------------------------------------------------------
+HTML is for  presenting the data.
+XML for representing or holding the data.
+
+They are same in the context that they are both tag based.
+
+Difference is purpose of use.
+Difference is in HTML the tags are predefined.
+In case of XML tags are not predefined. The coder have a flexibility of defining his or her
+tags.
+But these tags can be restricted or validated by the usage of schema or DTD.
+
+   <!DOCTYPE html>
+     <html>
+       <body>
+         <h1> Ravi Kumar</h1>
+       </body>
+      </html>
+-------------------------------------------------------------------------------------------------------
+https://www.w3schools.com/xml/
+
+<?xml version="1.0" encoding="utf-8"?>
+
+  <name>
+      <firstname>Ravi</firstname>      
+      <lastname>Kumar</lastname>
+ </name>
+---------------------------------------------------------------------
+The student.hbm.xml
+
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.cts.demo.Student"  table="student_master">
+        <id name="roll" type="int">
+            <column name="student_roll" />
+               <generator class="assigned"/>
+        </id>
+        <property name="name" type="java.lang.String">
+            <column name="student_name"  length="20"/>
+        </property>
+        <property name="marks" type="int">
+            <column name="student_marks" length="3" />
+        </property>
+    </class>
+</hibernate-mapping>
+---------------------------------------------------------------------------------
+package com.cts.demo.domain;
+
+public class Student {
+
+	private int roll;
+	private String name;
+	private int marks;
+	
+	
+	public Student() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	
+	
+	public Student(int roll, String name, int marks) {
+		super();
+		this.roll = roll;
+		this.name = name;
+		this.marks = marks;
+	}
+
+
+	public int getRoll() {
+		return roll;
+	}
+	public void setRoll(int roll) {
+		this.roll = roll;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getMarks() {
+		return marks;
+	}
+	public void setMarks(int marks) {
+		this.marks = marks;
+	}
+	
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + marks;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + roll;
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Student other = (Student) obj;
+		if (marks != other.marks)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (roll != other.roll)
+			return false;
+		return true;
+	}
+	@Override
+	public String toString() {
+		return "Student [roll=" + roll + ", name=" + name + ", marks=" + marks + "]";
+	}
+	
+}
+
+------------------------------------------------------------------------------------------------------
+
+package com.cts.demo.application;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+
+import com.cts.demo.domain.Student;
+
+
+
+public class StudentMain {
+
+	public static void main(String[] args) {
+		
+		Configuration configuration=new Configuration();
+		configuration.configure("hibernate.cfg.xml");
+		
+		
+		ServiceRegistry serviceRegistry=new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+		SessionFactory  sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+		Session session=sessionFactory.openSession();
+		Transaction transaction=session.beginTransaction();
+		Student student=new Student();
+		student.setRoll(1);
+		student.setName("Akash");
+		student.setMarks(100);
+		session.save(student);
+		transaction.commit();
+		session.close();
+		
+	}
+
+}
+
+--------------------------------------------------------------------------------------------------------------
+The differences:-
+     1) No connection object.
+     2) No need to write the SQL statement for inserting the record.
+     3) We are able to even create the table just by executing the Hibernate code for the table if it is
+        not existing.   
+     4) We are not using checked exception like SQLException.
+     5) We have worked 2 configuration files.
+     6) New APIs ====> Configuration, ServiceRegistry, SessionFactory, Transaction
+-------------------------------------------------------------------------------------------------------------
+
+
+
+
